@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Banner Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Banners</h2>
+    <a href="{{ url_for('admin.create_banner') }}" class="btn btn-primary">Add New Banner</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Image</th>
+            <th>Link</th>
+            <th>Sort Order</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for banner in banners %}
+        <tr>
+            <td>{{ banner.id }}</td>
+            <td>{{ banner.title }}</td>
+            <td><img src="/uploads/{{ banner.image }}" alt="{{ banner.title }}" style="max-width: 100px;"></td>
+            <td>{{ banner.link or 'N/A' }}</td>
+            <td>{{ banner.sort_order }}</td>
+            <td><span class="badge bg-{{ 'success' if banner.is_active else 'secondary' }}">{{ 'Active' if banner.is_active else 'Inactive' }}</span></td>
+            <td>
+                <a href="{{ url_for('admin.edit_banner', id=banner.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="POST" action="{{ url_for('admin.delete_banner', id=banner.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

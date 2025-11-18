@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Order Management{% endblock %}
+
+{% block content %}
+<h2>Orders</h2>
+
+<form method="GET" class="mb-3">
+    <select name="status" class="form-control d-inline-block" style="width: auto;">
+        <option value="">All Status</option>
+        <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="processing" {% if status == 'processing' %}selected{% endif %}>Processing</option>
+        <option value="shipped" {% if status == 'shipped' %}selected{% endif %}>Shipped</option>
+        <option value="delivered" {% if status == 'delivered' %}selected{% endif %}>Delivered</option>
+        <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order Number</th>
+            <th>Customer</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders.items %}
+        <tr>
+            <td>{{ order.order_number }}</td>
+            <td>{{ order.shipping_name }}</td>
+            <td>${{ "%.2f"|format(order.total_amount) }}</td>
+            <td><span class="badge bg-secondary">{{ order.status }}</span></td>
+            <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-primary">View</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination -->
+{% if orders.pages > 1 %}
+<nav>
+    <ul class="pagination">
+        {% if orders.has_prev %}
+        <li class="page-item"><a class="page-link" href="?page={{ orders.prev_num }}{% if status %}&status={{ status }}{% endif %}">Previous</a></li>
+        {% endif %}
+        {% for page_num in orders.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == orders.page %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_num }}{% if status %}&status={{ status }}{% endif %}">{{ page_num }}</a></li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        {% if orders.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ orders.next_num }}{% if status %}&status={{ status }}{% endif %}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+

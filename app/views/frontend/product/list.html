@@ -1,0 +1,116 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Products - Shopwise{% endblock %}
+
+{% block content %}
+<!-- START SECTION BREADCRUMB -->
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Shop</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb justify-content-md-end">
+                    <li class="breadcrumb-item"><a href="{{ url_for('frontend.index') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Shop</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION BREADCRUMB -->
+
+<!-- START SECTION SHOP -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="row align-items-center mb-4 pb-1">
+                    <div class="col-12">
+                        <div class="product_header">
+                            <div class="product_header_left">
+                                <form method="GET" action="{{ url_for('frontend.product_list') }}">
+                                    <input type="hidden" name="category_id" value="{{ category_id or '' }}">
+                                    <input type="hidden" name="search" value="{{ search or '' }}">
+                                    <select name="sort" class="form-control form-control-sm" onchange="this.form.submit()">
+                                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Default sorting</option>
+                                        <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Sort by price: low to high</option>
+                                        <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Sort by price: high to low</option>
+                                        <option value="name" {% if sort == 'name' %}selected{% endif %}>Sort by name</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row shop_container">
+                    {% for product in products.items %}
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="product_wrap">
+                            <div class="product_img">
+                                <a href="{{ url_for('frontend.product_detail', id=product.id) }}">
+                                    <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}">
+                                </a>
+                                <div class="product_action_box">
+                                    <ul class="list_none pr_action_btn">
+                                        <li class="add-to-cart">
+                                            {% if product.is_in_stock() %}
+                                            <form method="POST" action="{{ url_for('frontend.cart_add') }}" style="display: inline;">
+                                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn-link"><i class="icon-basket-loaded"></i> Add To Cart</button>
+                                            </form>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="product_info">
+                                <h6 class="product_title"><a href="{{ url_for('frontend.product_detail', id=product.id) }}">{{ product.name }}</a></h6>
+                                <div class="product_price">
+                                    <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                                </div>
+                                {% if not product.is_in_stock() %}
+                                <div class="text-danger">Out of Stock</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Pagination -->
+                {% if products.pages > 1 %}
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="pagination mt-3 justify-content-center">
+                            {% if products.has_prev %}
+                            <li class="page-item"><a class="page-link" href="?page={{ products.prev_num }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">Previous</a></li>
+                            {% endif %}
+                            {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                                {% if page_num %}
+                                    {% if page_num == products.page %}
+                                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                                    {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_num }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">{{ page_num }}</a></li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ products.next_num }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">Next</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION SHOP -->
+{% endblock %}
+

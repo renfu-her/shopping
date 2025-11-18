@@ -1,0 +1,49 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Contact Us - Shopwise{% endblock %}
+
+{% block content %}
+<!-- START SECTION BREADCRUMB -->
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Contact Us</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION BREADCRUMB -->
+
+<!-- START SECTION CONTACT -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="heading_s1">
+                    <h4>Get In Touch</h4>
+                </div>
+                <form method="POST" action="{{ url_for('frontend.contact') }}">
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" class="form-control" rows="5" placeholder="Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-fill-out">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION CONTACT -->
+{% endblock %}
+

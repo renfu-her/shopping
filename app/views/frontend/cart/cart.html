@@ -1,0 +1,95 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Shopping Cart - Shopwise{% endblock %}
+
+{% block content %}
+<!-- START SECTION BREADCRUMB -->
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Shopping Cart</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb justify-content-md-end">
+                    <li class="breadcrumb-item"><a href="{{ url_for('frontend.index') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Shopping Cart</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION BREADCRUMB -->
+
+<!-- START SECTION SHOP -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {% if cart_items %}
+                <div class="table-responsive shop_cart_table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="product-thumbnail">&nbsp;</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                                <th class="product-remove">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td class="product-thumbnail"><a href="{{ url_for('frontend.product_detail', id=item.product.id) }}"><img src="/uploads/{{ item.product.get_main_image() }}" alt="{{ item.product.name }}"></a></td>
+                                <td class="product-name" data-title="Product"><a href="{{ url_for('frontend.product_detail', id=item.product.id) }}">{{ item.product.name }}</a></td>
+                                <td class="product-price" data-title="Price">${{ "%.2f"|format(item.product.price) }}</td>
+                                <td class="product-quantity" data-title="Quantity">
+                                    <form method="POST" action="{{ url_for('frontend.cart_update') }}">
+                                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                        <div class="quantity">
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control">
+                                            <button type="submit" class="btn btn-sm">Update</button>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="product-subtotal" data-title="Total">${{ "%.2f"|format(item.subtotal) }}</td>
+                                <td class="product-remove" data-title="Remove">
+                                    <form method="POST" action="{{ url_for('frontend.cart_remove', product_id=item.product.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn-link"><i class="ion-close"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>${{ "%.2f"|format(total) }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-end">
+                            <a href="{{ url_for('frontend.checkout') }}" class="btn btn-fill-out">Proceed To Checkout</a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <h4>Your cart is empty</h4>
+                    <a href="{{ url_for('frontend.product_list') }}" class="btn btn-fill-out">Continue Shopping</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION SHOP -->
+{% endblock %}
+

@@ -33,7 +33,9 @@ def create_banner():
     """
     if request.method == 'POST':
         try:
+            name = request.form.get('name', '').strip() or None
             title = request.form.get('title', '').strip()
+            subtitle = request.form.get('subtitle', '').strip() or None
             link = request.form.get('link', '').strip() or None
             sort_order = request.form.get('sort_order', 0, type=int)
             is_active = request.form.get('is_active') == 'on'
@@ -44,7 +46,9 @@ def create_banner():
                 return render_template('banners/form.html', banner=None)
             
             banner = Banner(
+                name=name,
                 title=title,
+                subtitle=subtitle,
                 link=link,
                 sort_order=sort_order,
                 is_active=is_active
@@ -90,7 +94,9 @@ def edit_banner(id):
     
     if request.method == 'POST':
         try:
+            banner.name = request.form.get('name', '').strip() or None
             banner.title = request.form.get('title', '').strip()
+            banner.subtitle = request.form.get('subtitle', '').strip() or None
             banner.link = request.form.get('link', '').strip() or None
             banner.sort_order = request.form.get('sort_order', 0, type=int)
             banner.is_active = request.form.get('is_active') == 'on'

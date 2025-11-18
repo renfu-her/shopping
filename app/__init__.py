@@ -37,16 +37,52 @@ def create_app(config_name='development'):
     # Register API
     app.register_blueprint(api_bp)
     
-    # Create upload directories
+    # Create upload directories and convert to absolute path
     upload_folder = app.config['UPLOAD_FOLDER']
+    if not os.path.isabs(upload_folder):
+        # Convert relative path to absolute path
+        upload_folder = os.path.join(root_dir, upload_folder)
+    app.config['UPLOAD_FOLDER'] = upload_folder
+    
     os.makedirs(upload_folder + '/products', exist_ok=True)
     os.makedirs(upload_folder + '/banners', exist_ok=True)
     os.makedirs(upload_folder + '/categories', exist_ok=True)
     
-    # Serve uploaded files
+    # Serve uploaded files with WebP fallback
     @app.route('/uploads/<path:filename>')
     def uploaded_file(filename):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+        """
+        Serve uploaded files with automatic WebP fallback.
+        If the requested file doesn't exist and it's an image file,
+        try to serve the corresponding WebP version.
+        """
+        import os
+        from flask import abort
+        
+        upload_folder = app.config['UPLOAD_FOLDER']
+        file_path = os.path.join(upload_folder, filename)
+        
+        # If file exists, serve it
+        if os.path.exists(file_path):
+            return send_from_directory(upload_folder, filename)
+        
+        # If file doesn't exist and it's an image file, try WebP fallback
+        image_extensions = {'.png', '.jpg', '.jpeg', '.gif'}
+        file_ext = os.path.splitext(filename)[1].lower()
+        
+        if file_ext in image_extensions:
+            # Try to find corresponding WebP file
+            webp_filename = os.path.splitext(filename)[0] + '.webp'
+            webp_path = os.path.join(upload_folder, webp_filename)
+            
+            if os.path.exists(webp_path):
+                # Set proper content type for WebP
+                response = send_from_directory(upload_folder, webp_filename)
+                response.headers['Content-Type'] = 'image/webp'
+                return response
+        
+        # File not found
+        abort(404)
     
     return app
 

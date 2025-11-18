@@ -2,65 +2,125 @@
 
 {% block page_title %}{{ '編輯' if product else '新增' }} 產品{% endblock %}
 
-{% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="5">{{ product.description if product else '' }}</textarea>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock if product else 0 }}" required>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="category_id" class="form-label">Category</label>
-                <select class="form-control" id="category_id" name="category_id" required>
-                    <option value="">Select Category</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if product and product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="images" class="form-label">Images</label>
-                {% if product %}
-                <div class="mb-2">
-                    {% for img in product.get_images() %}
-                    <div class="d-inline-block me-2 mb-2">
-                        <img src="/uploads/{{ img }}" alt="Product Image" style="max-width: 100px;">
-                        <input type="checkbox" name="remove_images" value="{{ img }}"> Remove
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
-            </div>
-            <div class="mb-3">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if not product or product.is_active %}checked{% endif %}>
-                    <label class="form-check-label" for="is_active">Active</label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{{ url_for('backend.products') }}" class="btn btn-secondary">Cancel</a>
-        </form>
-    </div>
-</div>
+{% block back_link %}
+{% if product %}
+<a href="{{ url_for('backend.products') }}" class="btn btn-link text-decoration-none p-0">
+    <i class="fas fa-arrow-left"></i> 返回列表
+</a>
+{% endif %}
 {% endblock %}
 
+{% block content %}
+<div class="row">
+    <div class="col-12 col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <!-- 產品名稱 -->
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">產品名稱</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" required>
+                        <small class="form-text text-muted">產品的顯示名稱</small>
+                    </div>
+
+                    <!-- 產品描述 -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">產品描述</label>
+                        <textarea class="form-control" id="description" name="description" rows="5">{{ product.description if product else '' }}</textarea>
+                        <small class="form-text text-muted">產品的詳細描述</small>
+                    </div>
+
+                    <!-- 價格和庫存 -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="price" class="form-label fw-bold">價格</label>
+                                <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" required min="0">
+                                <small class="form-text text-muted">產品售價</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="stock" class="form-label fw-bold">庫存</label>
+                                <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock if product else 0 }}" required min="0">
+                                <small class="form-text text-muted">產品庫存數量</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分類 -->
+                    <div class="mb-4">
+                        <label for="category_id" class="form-label fw-bold">分類</label>
+                        <select class="form-control" id="category_id" name="category_id" required>
+                            <option value="">請選擇分類</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if product and product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">選擇產品所屬的分類</small>
+                    </div>
+
+                    <!-- 產品圖片 -->
+                    <div class="mb-4">
+                        <label for="images" class="form-label fw-bold">產品圖片</label>
+                        {% if product and product.get_images() %}
+                        <div class="mb-3">
+                            <small class="form-text text-muted d-block mb-2">當前圖片：</small>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for img in product.get_images() %}
+                                <div class="position-relative">
+                                    <img src="/uploads/{{ img }}" alt="Product Image" class="img-thumbnail" style="max-width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="form-check position-absolute top-0 end-0 m-1">
+                                        <input class="form-check-input" type="checkbox" name="remove_images" value="{{ img }}" id="remove_{{ loop.index }}">
+                                        <label class="form-check-label text-white" for="remove_{{ loop.index }}" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                                            <i class="fas fa-times"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple {{ 'required' if not product or not product.get_images() else '' }}>
+                        <small class="form-text text-muted">可上傳多張圖片，第一張將作為主圖</small>
+                    </div>
+
+                    <!-- 狀態 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block">狀態</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if not product or product.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">啟用</label>
+                        </div>
+                        <small class="form-text text-muted">只有啟用的產品會顯示在前台</small>
+                    </div>
+
+                    <!-- 提交按鈕 -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 儲存
+                        </button>
+                        <a href="{{ url_for('backend.products') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> 取消
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 當前圖片預覽 -->
+    {% if product and product.get_images() %}
+    <div class="col-12 col-lg-8 mx-auto mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">當前圖片</h5>
+            </div>
+            <div class="card-body">
+                <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-width: 500px;">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -150,27 +150,27 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith('backend.user') %}active{% endif %}" href="{{ url_for('backend.users') }}">
-                        <i class="fas fa-users"></i>使用者管理
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith('backend.banner') %}active{% endif %}" href="{{ url_for('backend.banners') }}">
+                    <a class="nav-link {% if request.endpoint in ['backend.banners', 'backend.create_banner', 'backend.edit_banner'] %}active{% endif %}" href="{{ url_for('backend.banners') }}">
                         <i class="fas fa-image"></i>首頁 Banner
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith('backend.categor') %}active{% endif %}" href="{{ url_for('backend.categories') }}">
+                    <a class="nav-link {% if request.endpoint in ['backend.users', 'backend.create_user', 'backend.edit_user'] %}active{% endif %}" href="{{ url_for('backend.users') }}">
+                        <i class="fas fa-users"></i>使用者管理
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint in ['backend.categories', 'backend.create_category', 'backend.edit_category'] %}active{% endif %}" href="{{ url_for('backend.categories') }}">
                         <i class="fas fa-folder"></i>分類管理
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith('backend.product') %}active{% endif %}" href="{{ url_for('backend.products') }}">
+                    <a class="nav-link {% if request.endpoint in ['backend.products', 'backend.create_product', 'backend.edit_product'] %}active{% endif %}" href="{{ url_for('backend.products') }}">
                         <i class="fas fa-box"></i>產品管理
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith('backend.order') %}active{% endif %}" href="{{ url_for('backend.orders') }}">
+                    <a class="nav-link {% if request.endpoint in ['backend.orders', 'backend.order_detail', 'backend.update_order_status'] %}active{% endif %}" href="{{ url_for('backend.orders') }}">
                         <i class="fas fa-shopping-cart"></i>訂單管理
                     </a>
                 </li>
@@ -194,7 +194,10 @@
                 <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="h4 mb-0 d-none d-lg-block">{% block page_title %}儀表板{% endblock %}</h1>
+                <div class="d-flex align-items-center">
+                    <h1 class="h4 mb-0 d-none d-lg-block me-3">{% block page_title %}儀表板{% endblock %}</h1>
+                    {% block back_link %}{% endblock %}
+                </div>
                 <div class="navbar-nav ms-auto">
                     <span class="navbar-text me-3">
                         <i class="fas fa-user-circle"></i>管理員

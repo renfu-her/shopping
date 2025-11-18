@@ -5,7 +5,9 @@ class Banner(db.Model):
     __tablename__ = 'banners'
     
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=True)  # For management identification
     title = db.Column(db.String(200), nullable=False)
+    subtitle = db.Column(db.String(500), nullable=True)  # Subtitle displayed below title
     image = db.Column(db.String(255), nullable=False)
     link = db.Column(db.String(500), nullable=True)  # Optional link URL
     sort_order = db.Column(db.Integer, default=0)

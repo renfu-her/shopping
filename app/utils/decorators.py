@@ -8,7 +8,7 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             flash('Please login to access this page.', 'warning')
-            return redirect(url_for('admin.login'))
+            return redirect(url_for('backend.login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -18,12 +18,12 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             flash('Please login to access this page.', 'warning')
-            return redirect(url_for('admin.login'))
+            return redirect(url_for('backend.login'))
         
         user = User.query.get(session['user_id'])
         if not user or not user.is_admin():
             flash('Access denied. Admin privileges required.', 'danger')
-            return redirect(url_for('admin.dashboard'))
+            return redirect(url_for('backend.dashboard'))
         
         return f(*args, **kwargs)
     return decorated_function

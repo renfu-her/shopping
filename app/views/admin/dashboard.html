@@ -67,45 +67,6 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="fas fa-bolt"></i> 快速操作</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ url_for('admin.users') }}" class="btn btn-primary w-100 py-3">
-                            <i class="fas fa-users fa-2x mb-2 d-block"></i>
-                            <span>使用者管理</span>
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ url_for('admin.categories') }}" class="btn btn-info w-100 py-3">
-                            <i class="fas fa-folder fa-2x mb-2 d-block"></i>
-                            <span>分類管理</span>
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ url_for('admin.products') }}" class="btn btn-success w-100 py-3">
-                            <i class="fas fa-box fa-2x mb-2 d-block"></i>
-                            <span>產品管理</span>
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ url_for('admin.orders') }}" class="btn btn-warning w-100 py-3">
-                            <i class="fas fa-shopping-cart fa-2x mb-2 d-block"></i>
-                            <span>訂單管理</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Recent Orders -->
 <div class="row">
     <div class="col-12">
@@ -138,7 +99,7 @@
                                 </td>
                                 <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                 <td>
-                                    <a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ url_for('backend.order_detail', id=order.id) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye"></i> 查看
                                     </a>
                                 </td>

@@ -10,7 +10,7 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Nullable for guest orders
     order_number = db.Column(db.String(50), unique=True, nullable=False, index=True)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False)
-    status = db.Column(db.String(20), default='pending', nullable=False)  # pending, processing, shipped, delivered, cancelled
+    status = db.Column(db.String(20), default='pending', nullable=False)
     shipping_address = db.Column(db.Text, nullable=False)
     shipping_name = db.Column(db.String(100), nullable=False)
     shipping_phone = db.Column(db.String(20), nullable=False)

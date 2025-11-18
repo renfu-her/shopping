@@ -31,15 +31,16 @@ def order_detail(id):
 @login_required
 def update_order_status(id):
     """Update order status"""
-    order = Order.query.get_or_404(id)
-    new_status = request.form.get('status')
+    from app.services.order_service import OrderService
+    from app.constants import FLASH_SUCCESS, FLASH_ERROR
     
-    if new_status in ['pending', 'processing', 'shipped', 'delivered', 'cancelled']:
-        order.status = new_status
-        db.session.commit()
-        flash('Order status updated successfully', 'success')
+    new_status = request.form.get('status')
+    success, error = OrderService.update_status(id, new_status)
+    
+    if success:
+        flash('Order status updated successfully', FLASH_SUCCESS)
     else:
-        flash('Invalid status', 'danger')
+        flash(error or 'Failed to update order status', FLASH_ERROR)
     
     return redirect(url_for('admin.order_detail', id=id))
 

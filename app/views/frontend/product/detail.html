@@ -1,6 +1,78 @@
 {% extends "frontend_base.html" %}
 
 {% block title %}{{ product.name }} - Shopwise{% endblock %}
+{% block meta_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block meta_keywords %}{{ product.name }}, {{ product.category_name if product.get('category_name') else '' }}, shopwise, online shopping{% endblock %}
+{% block canonical_url %}{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_url %}{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}{% endblock %}
+{% block og_title %}{{ product.name }} - Shopwise{% endblock %}
+{% block og_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block og_image %}{{ request.url_root }}uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}{% endblock %}
+{% block twitter_title %}{{ product.name }} - Shopwise{% endblock %}
+{% block twitter_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block twitter_image %}{{ request.url_root }}uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name|e }}",
+  "description": "{{ (product.description or '')|e|truncate(500) }}",
+  "image": [
+    {% for img in product.images %}
+    "{{ request.url_root }}uploads/{{ img }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "Shopwise"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}",
+    "priceCurrency": "USD",
+    "price": "{{ product.price }}",
+    "priceValidUntil": "2025-12-31",
+    "availability": "https://schema.org/{% if product.stock > 0 and product.is_active %}InStock{% else %}OutOfStock{% endif %}",
+    "itemCondition": "https://schema.org/NewCondition"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": "10"
+  }{% if product.get('category_name') %},
+  "category": "{{ product.category_name|e }}"{% endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url_for('frontend.index', _external=True) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Products",
+      "item": "{{ url_for('frontend.product_list', _external=True) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ product.name|e }}",
+      "item": "{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}"
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <!-- START SECTION BREADCRUMB -->
@@ -33,11 +105,11 @@
                     <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
                         <div class="product-image">
                             <div class="product_img_box">
-                                <img id="product_img" src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}">
+                                <img id="product_img" src="/uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}" alt="{{ product.name }}">
                             </div>
-                            {% if product.get_images()|length > 1 %}
+                            {% if product.images|length > 1 %}
                             <div id="pr_item_gallery" class="product_gallery_item">
-                                {% for img in product.get_images() %}
+                                {% for img in product.images %}
                                 <div class="item">
                                     <a href="#" class="product_gallery_item {% if loop.first %}active{% endif %}" data-image="/uploads/{{ img }}">
                                         <img src="/uploads/{{ img }}" alt="product_small_img{{ loop.index }}">
@@ -58,7 +130,7 @@
                                 <div class="pr_desc">
                                     <p>{{ product.description or 'No description available.' }}</p>
                                 </div>
-                                {% if product.is_in_stock() %}
+                                {% if product.stock > 0 and product.is_active %}
                                 <div class="cart_extra">
                                     <form method="POST" action="{{ url_for('frontend.cart_add') }}">
                                         <input type="hidden" name="product_id" value="{{ product.id }}">

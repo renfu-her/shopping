@@ -84,5 +84,79 @@ def create_app(config_name='development'):
         # File not found
         abort(404)
     
+    # SEO: robots.txt
+    @app.route('/robots.txt')
+    def robots_txt():
+        """Generate robots.txt file"""
+        from flask import Response, request
+        robots_content = f"""User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /api/
+Sitemap: {request.url_root.rstrip('/')}/sitemap.xml
+"""
+        return Response(robots_content, mimetype='text/plain')
+    
+    # SEO: sitemap.xml
+    @app.route('/sitemap.xml')
+    def sitemap_xml():
+        """Generate sitemap.xml file"""
+        from flask import Response, url_for, request
+        from datetime import datetime
+        from app.utils.api_service import APIService
+        
+        with app.app_context():
+            # Get all active products
+            products_response = APIService.get_products(is_active=True, per_page=1000)
+            products = products_response.get('data', []) if products_response.get('success') else []
+            
+            # Get all active categories
+            categories_response = APIService.get_categories(is_active=True)
+            categories = categories_response.get('data', []) if categories_response.get('success') else []
+            
+            sitemap = ['<?xml version="1.0" encoding="UTF-8"?>']
+            sitemap.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+            
+            # Homepage
+            sitemap.append('  <url>')
+            sitemap.append(f'    <loc>{url_for("frontend.index", _external=True)}</loc>')
+            sitemap.append(f'    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>')
+            sitemap.append('    <changefreq>daily</changefreq>')
+            sitemap.append('    <priority>1.0</priority>')
+            sitemap.append('  </url>')
+            
+            # Product list page
+            sitemap.append('  <url>')
+            sitemap.append(f'    <loc>{url_for("frontend.product_list", _external=True)}</loc>')
+            sitemap.append(f'    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>')
+            sitemap.append('    <changefreq>daily</changefreq>')
+            sitemap.append('    <priority>0.8</priority>')
+            sitemap.append('  </url>')
+            
+            # Category pages
+            for category in categories:
+                sitemap.append('  <url>')
+                sitemap.append(f'    <loc>{url_for("frontend.product_list", category_id=category.get("id"), _external=True)}</loc>')
+                sitemap.append(f'    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>')
+                sitemap.append('    <changefreq>weekly</changefreq>')
+                sitemap.append('    <priority>0.7</priority>')
+                sitemap.append('  </url>')
+            
+            # Product detail pages
+            for product in products:
+                sitemap.append('  <url>')
+                if product.get('slug'):
+                    sitemap.append(f'    <loc>{url_for("frontend.product_detail", id=product.get("id"), slug=product.get("slug"), _external=True)}</loc>')
+                else:
+                    sitemap.append(f'    <loc>{url_for("frontend.product_detail", id=product.get("id"), _external=True)}</loc>')
+                sitemap.append(f'    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>')
+                sitemap.append('    <changefreq>weekly</changefreq>')
+                sitemap.append('    <priority>0.6</priority>')
+                sitemap.append('  </url>')
+            
+            sitemap.append('</urlset>')
+            
+            return Response('\n'.join(sitemap), mimetype='application/xml')
+    
     return app
 

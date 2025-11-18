@@ -12,7 +12,7 @@ class Config:
     DB_PORT = os.environ.get('DB_PORT') or '3306'
     DB_USER = os.environ.get('DB_USER') or 'root'
     DB_PASSWORD = os.environ.get('DB_PASSWORD') or ''
-    DB_NAME = os.environ.get('DB_NAME') or 'shopping'
+    DB_NAME = os.environ.get('DB_NAME') or 'shopping_db'
     
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
     SQLALCHEMY_TRACK_MODIFICATIONS = False

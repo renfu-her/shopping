@@ -78,13 +78,13 @@
             <form method="POST" action="{{ url_for('backend.login') }}">
                 <div class="mb-3">
                     <label for="username" class="form-label">
-                        <i class="fas fa-user"></i> 使用者名稱
+                        <i class="fas fa-user"></i> 使用者名稱 <span class="text-danger">*</span>
                     </label>
                     <input type="text" class="form-control" id="username" name="username" required autofocus>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">
-                        <i class="fas fa-lock"></i> 密碼
+                        <i class="fas fa-lock"></i> 密碼 <span class="text-danger">*</span>
                     </label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>

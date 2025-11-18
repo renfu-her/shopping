@@ -18,15 +18,15 @@
                 <form method="POST" enctype="multipart/form-data">
                     <!-- 產品名稱 -->
                     <div class="mb-4">
-                        <label for="name" class="form-label fw-bold">產品名稱</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" required>
+                        <label for="name" class="form-label fw-bold">產品名稱 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ (product.name or '') if product else '' }}" required>
                         <small class="form-text text-muted">產品的顯示名稱</small>
                     </div>
 
                     <!-- 產品描述 -->
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">產品描述</label>
-                        <textarea class="form-control" id="description" name="description" rows="5">{{ product.description if product else '' }}</textarea>
+                        <textarea class="form-control" id="description" name="description" rows="5">{{ (product.description or '') if product else '' }}</textarea>
                         <small class="form-text text-muted">產品的詳細描述</small>
                     </div>
 
@@ -34,14 +34,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label for="price" class="form-label fw-bold">價格</label>
+                                <label for="price" class="form-label fw-bold">價格 <span class="text-danger">*</span></label>
                                 <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" required min="0">
                                 <small class="form-text text-muted">產品售價</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                <label for="stock" class="form-label fw-bold">庫存</label>
+                                <label for="stock" class="form-label fw-bold">庫存 <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock if product else 0 }}" required min="0">
                                 <small class="form-text text-muted">產品庫存數量</small>
                             </div>
@@ -50,7 +50,7 @@
 
                     <!-- 分類 -->
                     <div class="mb-4">
-                        <label for="category_id" class="form-label fw-bold">分類</label>
+                        <label for="category_id" class="form-label fw-bold">分類 <span class="text-danger">*</span></label>
                         <select class="form-control" id="category_id" name="category_id" required>
                             <option value="">請選擇分類</option>
                             {% for cat in categories %}
@@ -62,7 +62,7 @@
 
                     <!-- 產品圖片 -->
                     <div class="mb-4">
-                        <label for="images" class="form-label fw-bold">產品圖片</label>
+                        <label for="images" class="form-label fw-bold">產品圖片 {% if not product or not product.get_images() %}<span class="text-danger">*</span>{% endif %}</label>
                         {% if product and product.get_images() %}
                         <div class="mb-3">
                             <small class="form-text text-muted d-block mb-2">當前圖片：</small>

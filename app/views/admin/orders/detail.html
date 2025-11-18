@@ -110,7 +110,7 @@
                 <form method="POST" action="{{ url_for('backend.update_order_status', id=order.id) }}">
                     <div class="row align-items-end">
                         <div class="col-md-4">
-                            <label for="status" class="form-label">訂單狀態</label>
+                            <label for="status" class="form-label">訂單狀態 <span class="text-danger">*</span></label>
                             <select name="status" id="status" class="form-select" required>
                                 <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>待處理</option>
                                 <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>處理中</option>

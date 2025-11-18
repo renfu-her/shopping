@@ -18,8 +18,8 @@
                 <form method="POST" enctype="multipart/form-data">
                     <!-- 分類名稱 -->
                     <div class="mb-4">
-                        <label for="name" class="form-label fw-bold">分類名稱</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ category.name if category else '' }}" required>
+                        <label for="name" class="form-label fw-bold">分類名稱 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ (category.name or '') if category else '' }}" required>
                         <small class="form-text text-muted">分類的顯示名稱</small>
                     </div>
 
@@ -40,7 +40,7 @@
                     <!-- 分類描述 -->
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">分類描述</label>
-                        <textarea class="form-control" id="description" name="description" rows="3">{{ category.description if category else '' }}</textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ (category.description or '') if category else '' }}</textarea>
                         <small class="form-text text-muted">分類的詳細描述</small>
                     </div>
 

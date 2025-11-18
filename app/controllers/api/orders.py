@@ -55,8 +55,57 @@ def get_orders():
         orders_data, page, per_page, pagination.total, '訂單列表'
     )
 
+@api_bp.route('/orders', methods=['POST'])
+def create_order():
+    """
+    Create new order from cart.
+    
+    Request body:
+        {
+            "shipping_name": "string",
+            "shipping_phone": "string",
+            "shipping_email": "string" (optional),
+            "shipping_address": "string",
+            "notes": "string" (optional)
+        }
+    
+    Returns:
+        JSON response with created order data
+    """
+    data = request.get_json() or {}
+    
+    shipping_name = data.get('shipping_name', '').strip()
+    shipping_phone = data.get('shipping_phone', '').strip()
+    shipping_email = data.get('shipping_email', '').strip() or None
+    shipping_address = data.get('shipping_address', '').strip()
+    notes = data.get('notes', '').strip() or None
+    
+    # Validation
+    if not shipping_name or not shipping_phone or not shipping_address:
+        return error_response('請填寫所有必填欄位', 400)
+    
+    # Create order using service
+    order, error = OrderService.create_order(
+        shipping_name=shipping_name,
+        shipping_phone=shipping_phone,
+        shipping_email=shipping_email,
+        shipping_address=shipping_address
+    )
+    
+    if error:
+        return error_response(error, 400)
+    
+    order_data = {
+        'id': order.id,
+        'order_number': order.order_number,
+        'total_amount': float(order.total_amount),
+        'status': order.status,
+        'created_at': order.created_at.isoformat()
+    }
+    
+    return success_response(order_data, '訂單建立成功', 201)
+
 @api_bp.route('/orders/<int:order_id>', methods=['GET'])
-@api_login_required
 def get_order(order_id):
     """
     Get order by ID.
@@ -72,7 +121,10 @@ def get_order(order_id):
             joinedload(Order.items).joinedload(OrderItem.product)
         )\
         .filter_by(id=order_id)\
-        .first_or_404()
+        .first()
+    
+    if not order:
+        return error_response('訂單不存在', 404)
     
     items_data = []
     for item in order.items:
@@ -136,4 +188,3 @@ def update_order_status(order_id):
         return success_response(order_data, '訂單狀態更新成功')
     else:
         return error_response(error or '更新訂單狀態失敗', 400)
-

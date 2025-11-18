@@ -9,10 +9,11 @@ from app.utils.api_response import success_response, error_response
 from app.models import User, Product, Category, Order, Banner
 from app import db
 from app.services.auth_service import AuthService
+from app.services.cart_service import CartService
+from app.services.order_service import OrderService
 from app.utils.helpers import save_uploaded_file, delete_file, slugify
 from sqlalchemy.orm import joinedload
 from app.models import OrderItem
-from app.services.order_service import OrderService
 
 class APIService:
     """Service layer that provides API functionality as callable functions."""
@@ -87,8 +88,19 @@ class APIService:
     def get_products(page: int = 1, per_page: int = 20, 
                     category_id: Optional[int] = None,
                     search: Optional[str] = None,
-                    is_active: Optional[bool] = None) -> Dict[str, Any]:
-        """Get products list."""
+                    is_active: Optional[bool] = None,
+                    sort: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get products list.
+        
+        Args:
+            page: Page number
+            per_page: Items per page
+            category_id: Filter by category
+            search: Search in product name
+            is_active: Filter by active status
+            sort: Sort option (newest, price_asc, price_desc, name)
+        """
         query = db.session.query(Product).options(joinedload(Product.category))
         
         if category_id:
@@ -98,7 +110,17 @@ class APIService:
         if is_active is not None:
             query = query.filter_by(is_active=is_active)
         
-        pagination = query.order_by(Product.created_at.desc()).paginate(
+        # Sorting
+        if sort == 'price_asc':
+            query = query.order_by(Product.price.asc())
+        elif sort == 'price_desc':
+            query = query.order_by(Product.price.desc())
+        elif sort == 'name':
+            query = query.order_by(Product.name.asc())
+        else:  # newest
+            query = query.order_by(Product.created_at.desc())
+        
+        pagination = query.paginate(
             page=page, per_page=per_page, error_out=False
         )
         
@@ -108,11 +130,14 @@ class APIService:
                 'id': product.id,
                 'name': product.name,
                 'slug': product.slug,
+                'description': product.description,
                 'price': float(product.price),
                 'stock': product.stock,
                 'category_id': product.category_id,
                 'category_name': product.category.name if product.category else None,
-                'is_active': product.is_active
+                'images': product.get_images(),
+                'is_active': product.is_active,
+                'created_at': product.created_at.isoformat()
             })
         
         return {
@@ -125,6 +150,58 @@ class APIService:
                 'pages': pagination.pages
             }
         }
+    
+    @staticmethod
+    def get_product(product_id: int) -> Dict[str, Any]:
+        """Get product by ID."""
+        product = db.session.query(Product)\
+            .options(joinedload(Product.category))\
+            .get(product_id)
+        
+        if not product:
+            return {'success': False, 'message': 'Product not found'}
+        
+        product_data = {
+            'id': product.id,
+            'name': product.name,
+            'slug': product.slug,
+            'description': product.description,
+            'price': float(product.price),
+            'stock': product.stock,
+            'category_id': product.category_id,
+            'category_name': product.category.name if product.category else None,
+            'images': product.get_images(),
+            'is_active': product.is_active,
+            'created_at': product.created_at.isoformat(),
+            'updated_at': product.updated_at.isoformat()
+        }
+        return {'success': True, 'data': product_data}
+    
+    @staticmethod
+    def get_related_products(product_id: int, category_id: int, limit: int = 4) -> Dict[str, Any]:
+        """Get related products (same category)."""
+        products = db.session.query(Product)\
+            .options(joinedload(Product.category))\
+            .filter(
+                Product.category_id == category_id,
+                Product.id != product_id,
+                Product.is_active == True
+            )\
+            .limit(limit)\
+            .all()
+        
+        products_data = []
+        for product in products:
+            products_data.append({
+                'id': product.id,
+                'name': product.name,
+                'slug': product.slug,
+                'price': float(product.price),
+                'images': product.get_images(),
+                'is_active': product.is_active
+            })
+        
+        return {'success': True, 'data': products_data}
     
     @staticmethod
     def get_categories(parent_id: Optional[int] = None,
@@ -147,10 +224,35 @@ class APIService:
                 'slug': category.slug,
                 'parent_id': category.parent_id,
                 'parent_name': category.parent.name if category.parent else None,
-                'is_active': category.is_active
+                'description': category.description,
+                'image': category.image,
+                'sort_order': category.sort_order,
+                'is_active': category.is_active,
+                'children_count': len(category.children) if category.children else 0
             })
         
         return {'success': True, 'data': categories_data}
+    
+    @staticmethod
+    def get_category(category_id: int) -> Dict[str, Any]:
+        """Get category by ID."""
+        category = Category.query.get(category_id)
+        if not category:
+            return {'success': False, 'message': 'Category not found'}
+        
+        category_data = {
+            'id': category.id,
+            'name': category.name,
+            'slug': category.slug,
+            'parent_id': category.parent_id,
+            'parent_name': category.parent.name if category.parent else None,
+            'description': category.description,
+            'image': category.image,
+            'sort_order': category.sort_order,
+            'is_active': category.is_active,
+            'children': [{'id': c.id, 'name': c.name} for c in category.children]
+        }
+        return {'success': True, 'data': category_data}
     
     @staticmethod
     def get_orders(page: int = 1, per_page: int = 20,
@@ -204,6 +306,7 @@ class APIService:
         for item in order.items:
             items_data.append({
                 'id': item.id,
+                'product_id': item.product_id,
                 'product_name': item.product.name if item.product else 'N/A',
                 'quantity': item.quantity,
                 'price': float(item.price),
@@ -220,10 +323,47 @@ class APIService:
             'shipping_email': order.shipping_email,
             'shipping_address': order.shipping_address,
             'items': items_data,
-            'created_at': order.created_at.isoformat()
+            'created_at': order.created_at.isoformat(),
+            'updated_at': order.updated_at.isoformat()
         }
         
         return {'success': True, 'data': order_data}
+    
+    @staticmethod
+    def create_order(shipping_name: str, shipping_phone: str,
+                    shipping_email: Optional[str] = None,
+                    shipping_address: str = '',
+                    notes: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create new order from cart.
+        
+        Returns:
+            Dict with 'success', 'data' (order data), and optional 'message'
+        """
+        # Validation
+        if not shipping_name or not shipping_phone or not shipping_address:
+            return {'success': False, 'message': '請填寫所有必填欄位'}
+        
+        # Create order using service
+        order, error = OrderService.create_order(
+            shipping_name=shipping_name,
+            shipping_phone=shipping_phone,
+            shipping_email=shipping_email,
+            shipping_address=shipping_address
+        )
+        
+        if error:
+            return {'success': False, 'message': error}
+        
+        order_data = {
+            'id': order.id,
+            'order_number': order.order_number,
+            'total_amount': float(order.total_amount),
+            'status': order.status,
+            'created_at': order.created_at.isoformat()
+        }
+        
+        return {'success': True, 'data': order_data, 'message': '訂單建立成功'}
     
     @staticmethod
     def get_banners(is_active: Optional[bool] = None) -> Dict[str, Any]:
@@ -246,4 +386,80 @@ class APIService:
             })
         
         return {'success': True, 'data': banners_data}
-
+    
+    # Cart API methods
+    @staticmethod
+    def get_cart() -> Dict[str, Any]:
+        """Get shopping cart items."""
+        cart_items = CartService.get_cart_items()
+        total = CartService.calculate_total(cart_items)
+        
+        # Convert cart items to dict format
+        items_data = []
+        for item in cart_items:
+            product = item.get('product')
+            items_data.append({
+                'product_id': product.id if product else None,
+                'product_name': product.name if product else 'N/A',
+                'product_image': product.get_main_image() if product else None,
+                'quantity': item.get('quantity', 0),
+                'price': float(product.price) if product else 0,
+                'subtotal': float(item.get('subtotal', 0))
+            })
+        
+        return {
+            'success': True,
+            'data': {
+                'items': items_data,
+                'total': float(total),
+                'item_count': len(cart_items)
+            }
+        }
+    
+    @staticmethod
+    def add_to_cart(product_id: int, quantity: int = 1) -> Dict[str, Any]:
+        """Add product to cart."""
+        if not product_id:
+            return {'success': False, 'message': '產品ID不能為空'}
+        
+        success, message = CartService.add_item(product_id, quantity)
+        
+        if success:
+            return {'success': True, 'message': message}
+        else:
+            return {'success': False, 'message': message}
+    
+    @staticmethod
+    def update_cart_item(product_id: int, quantity: int) -> Dict[str, Any]:
+        """Update cart item quantity."""
+        if not product_id or quantity is None:
+            return {'success': False, 'message': '產品ID和數量不能為空'}
+        
+        if quantity == 0:
+            return APIService.remove_from_cart(product_id)
+        
+        success, message = CartService.update_item(product_id, quantity)
+        
+        if success:
+            return {'success': True, 'message': message}
+        else:
+            return {'success': False, 'message': message}
+    
+    @staticmethod
+    def remove_from_cart(product_id: int) -> Dict[str, Any]:
+        """Remove item from cart."""
+        if CartService.remove_item(product_id):
+            return {'success': True, 'message': '商品已從購物車移除'}
+        else:
+            return {'success': False, 'message': '商品不在購物車中'}
+    
+    @staticmethod
+    def clear_cart() -> Dict[str, Any]:
+        """Clear shopping cart."""
+        CartService.clear_cart()
+        return {'success': True, 'message': '購物車已清空'}
+    
+    @staticmethod
+    def is_cart_empty() -> bool:
+        """Check if cart is empty."""
+        return CartService.is_empty()

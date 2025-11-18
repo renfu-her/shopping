@@ -25,14 +25,17 @@ def create_app(config_name='development'):
     db.init_app(app)
     migrate.init_app(app, db)
     
-    # Register blueprints (API first, then backend, then frontend)
+    # Register blueprints (order doesn't matter since templates use unique names)
     from app.controllers.api import api_bp
-    from app.controllers.admin import backend_bp
     from app.controllers.frontend import frontend_bp
+    from app.controllers.admin import backend_bp
     
-    app.register_blueprint(api_bp)
-    app.register_blueprint(backend_bp, url_prefix='/backend')
+    # Register frontend (root path / maps to frontend)
     app.register_blueprint(frontend_bp)
+    # Register backend with /backend prefix
+    app.register_blueprint(backend_bp, url_prefix='/backend')
+    # Register API
+    app.register_blueprint(api_bp)
     
     # Create upload directories
     upload_folder = app.config['UPLOAD_FOLDER']

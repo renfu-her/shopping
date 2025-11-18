@@ -10,4 +10,5 @@ from app.controllers.api import categories
 from app.controllers.api import orders
 from app.controllers.api import banners
 from app.controllers.api import dashboard
+from app.controllers.api import cart
 

@@ -30,18 +30,25 @@ CREATE DATABASE shopping_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 4. **Initialize database:**
 ```bash
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+# Using uv
+uv run flask db init
+uv run flask db migrate -m "Initial migration"
+uv run flask db upgrade
 ```
 
 Or simply run the application once - it will create tables automatically:
 ```bash
-python run.py
+uv run wsgi.py
 ```
 
 5. **Run the application:**
 ```bash
+# Using uv (recommended)
+uv run wsgi.py
+
+# Or directly
+python wsgi.py
+# or
 python run.py
 ```
 

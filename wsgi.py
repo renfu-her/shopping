@@ -1,7 +1,10 @@
 """
 WSGI entry point for the shopping platform application.
 Can be used with production servers like Gunicorn, uWSGI, etc.
-Also can be run directly: python wsgi.py
+Also can be run directly: 
+    python wsgi.py
+    or
+    uv run wsgi.py
 """
 from app import create_app, db
 from app.database import init_db

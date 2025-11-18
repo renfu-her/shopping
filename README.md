@@ -26,6 +26,8 @@ E-commerce shopping platform built with Flask, SQLAlchemy, and MySQL.
 uv sync
 ```
 
+This will create a virtual environment and install all dependencies automatically.
+
 2. Create `.env` file from `.env.example`:
 ```bash
 cp .env.example .env
@@ -35,6 +37,12 @@ cp .env.example .env
 
 4. Initialize database:
 ```bash
+# Using uv
+uv run flask db init
+uv run flask db migrate -m "Initial migration"
+uv run flask db upgrade
+
+# Or directly
 flask db init
 flask db migrate -m "Initial migration"
 flask db upgrade
@@ -42,15 +50,22 @@ flask db upgrade
 
 5. Run the application:
 ```bash
-# Option 1: Using wsgi.py (recommended for production)
+# Option 1: Using uv (recommended)
+uv run wsgi.py
+
+# Option 2: Using wsgi.py directly
 python wsgi.py
 
-# Option 2: Using run.py (development)
+# Option 3: Using run.py (development)
 python run.py
 ```
 
 For production deployment with Gunicorn:
 ```bash
+# Using uv
+uv run gunicorn wsgi:application
+
+# Or directly
 gunicorn wsgi:application
 ```
 

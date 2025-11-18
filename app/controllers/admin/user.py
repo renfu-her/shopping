@@ -22,7 +22,7 @@ def login():
         else:
             flash('Invalid username or password', 'danger')
     
-    return render_template('admin/login.html')
+    return render_template('login.html')
 
 @admin_bp.route('/logout')
 @login_required
@@ -38,7 +38,7 @@ def users():
     """User management list"""
     page = request.args.get('page', 1, type=int)
     users = User.query.paginate(page=page, per_page=20, error_out=False)
-    return render_template('admin/users/list.html', users=users)
+    return render_template('users/list.html', users=users)
 
 @admin_bp.route('/users/create', methods=['GET', 'POST'])
 @admin_required
@@ -57,7 +57,7 @@ def create_user():
         else:
             flash(error or 'Failed to create user', 'danger')
     
-    return render_template('admin/users/form.html')
+    return render_template('users/form.html')
 
 @admin_bp.route('/users/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required

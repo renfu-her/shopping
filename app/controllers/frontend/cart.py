@@ -21,7 +21,7 @@ def cart():
     cart_items = CartService.get_cart_items()
     total = CartService.calculate_total(cart_items)
     
-    return render_template('frontend/cart/cart.html', cart_items=cart_items, total=total)
+    return render_template('cart/cart.html', cart_items=cart_items, total=total)
 
 @frontend_bp.route('/cart/update', methods=['POST'])
 def cart_update():
@@ -92,12 +92,12 @@ def checkout():
     cart_items = CartService.get_cart_items()
     total = CartService.calculate_total(cart_items)
     
-    return render_template('frontend/cart/checkout.html', cart_items=cart_items, total=total)
+    return render_template('cart/checkout.html', cart_items=cart_items, total=total)
 
 @frontend_bp.route('/order-complete/<int:order_id>')
 def order_complete(order_id):
     """Order completion page"""
     from app.models import Order
     order = Order.query.get_or_404(order_id)
-    return render_template('frontend/cart/order_complete.html', order=order)
+    return render_template('cart/order_complete.html', order=order)
 

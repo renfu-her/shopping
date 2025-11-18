@@ -1,75 +1,157 @@
-{% extends "admin/base.html" %}
+{% extends "base.html" %}
 
-{% block page_title %}Dashboard{% endblock %}
+{% block page_title %}儀表板{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-primary text-white">
             <div class="card-body">
-                <h5 class="card-title">Total Users</h5>
-                <h2>{{ stats.total_users }}</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-white-50">使用者總數</h6>
+                        <h2 class="mb-0">{{ stats.total_users }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success mb-3">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-success text-white">
             <div class="card-body">
-                <h5 class="card-title">Total Products</h5>
-                <h2>{{ stats.total_products }}</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-white-50">產品總數</h6>
+                        <h2 class="mb-0">{{ stats.total_products }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-box fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning mb-3">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-warning text-white">
             <div class="card-body">
-                <h5 class="card-title">Total Orders</h5>
-                <h2>{{ stats.total_orders }}</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-white-50">訂單總數</h6>
+                        <h2 class="mb-0">{{ stats.total_orders }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-shopping-cart fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-info text-white">
             <div class="card-body">
-                <h5 class="card-title">Pending Orders</h5>
-                <h2>{{ stats.pending_orders }}</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-white-50">待處理訂單</h6>
+                        <h2 class="mb-0">{{ stats.pending_orders }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-clock fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
+<!-- Quick Actions -->
+<div class="row mb-4">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h5>Recent Orders</h5>
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> 快速操作</h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Order Number</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in recent_orders %}
-                        <tr>
-                            <td>{{ order.order_number }}</td>
-                            <td>${{ "%.2f"|format(order.total_amount) }}</td>
-                            <td><span class="badge bg-secondary">{{ order.status }}</span></td>
-                            <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td><a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-primary">View</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('admin.users') }}" class="btn btn-primary w-100 py-3">
+                            <i class="fas fa-users fa-2x mb-2 d-block"></i>
+                            <span>使用者管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('admin.categories') }}" class="btn btn-info w-100 py-3">
+                            <i class="fas fa-folder fa-2x mb-2 d-block"></i>
+                            <span>分類管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('admin.products') }}" class="btn btn-success w-100 py-3">
+                            <i class="fas fa-box fa-2x mb-2 d-block"></i>
+                            <span>產品管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('admin.orders') }}" class="btn btn-warning w-100 py-3">
+                            <i class="fas fa-shopping-cart fa-2x mb-2 d-block"></i>
+                            <span>訂單管理</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-list"></i> 最近訂單</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>訂單編號</th>
+                                <th>總金額</th>
+                                <th>狀態</th>
+                                <th>日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>{{ order.order_number }}</td>
+                                <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'warning' if order.status == 'pending' else 'success' if order.status == 'delivered' else 'secondary' }}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> 查看
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-4">暫無訂單</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

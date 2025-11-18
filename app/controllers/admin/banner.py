@@ -10,7 +10,7 @@ from app.utils.helpers import save_uploaded_file, delete_file
 def banners():
     """Banner management list"""
     banners = Banner.query.order_by(Banner.sort_order).all()
-    return render_template('admin/banners/list.html', banners=banners)
+    return render_template('banners/list.html', banners=banners)
 
 @admin_bp.route('/banners/create', methods=['GET', 'POST'])
 @login_required
@@ -38,14 +38,14 @@ def create_banner():
                     banner.image = image_path
                 else:
                     flash('Failed to upload image', 'danger')
-                    return render_template('admin/banners/form.html', banner=None)
+                    return render_template('banners/form.html', banner=None)
         
         db.session.add(banner)
         db.session.commit()
         flash('Banner created successfully', 'success')
         return redirect(url_for('admin.banners'))
     
-    return render_template('admin/banners/form.html', banner=None)
+    return render_template('banners/form.html', banner=None)
 
 @admin_bp.route('/banners/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -75,7 +75,7 @@ def edit_banner(id):
         flash('Banner updated successfully', 'success')
         return redirect(url_for('admin.banners'))
     
-    return render_template('admin/banners/form.html', banner=banner)
+    return render_template('banners/form.html', banner=banner)
 
 @admin_bp.route('/banners/<int:id>/delete', methods=['POST'])
 @login_required

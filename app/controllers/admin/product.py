@@ -24,7 +24,7 @@ def products():
     products = query.order_by(Product.created_at.desc()).paginate(page=page, per_page=20, error_out=False)
     categories = Category.query.all()
     
-    return render_template('admin/products/list.html', products=products, categories=categories, 
+    return render_template('products/list.html', products=products, categories=categories, 
                          search=search, category_id=category_id)
 
 @admin_bp.route('/products/create', methods=['GET', 'POST'])
@@ -67,7 +67,7 @@ def create_product():
         return redirect(url_for('admin.products'))
     
     categories = Category.query.all()
-    return render_template('admin/products/form.html', product=None, categories=categories)
+    return render_template('products/form.html', product=None, categories=categories)
 
 @admin_bp.route('/products/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -110,7 +110,7 @@ def edit_product(id):
         return redirect(url_for('admin.products'))
     
     categories = Category.query.all()
-    return render_template('admin/products/form.html', product=product, categories=categories)
+    return render_template('products/form.html', product=product, categories=categories)
 
 @admin_bp.route('/products/<int:id>/delete', methods=['POST'])
 @login_required

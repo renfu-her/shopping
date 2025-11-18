@@ -18,14 +18,14 @@ def orders():
     
     orders = query.order_by(Order.created_at.desc()).paginate(page=page, per_page=20, error_out=False)
     
-    return render_template('admin/orders/list.html', orders=orders, status=status)
+    return render_template('orders/list.html', orders=orders, status=status)
 
 @admin_bp.route('/orders/<int:id>')
 @login_required
 def order_detail(id):
     """Order detail page"""
     order = Order.query.get_or_404(id)
-    return render_template('admin/orders/detail.html', order=order)
+    return render_template('orders/detail.html', order=order)
 
 @admin_bp.route('/orders/<int:id>/update-status', methods=['POST'])
 @login_required

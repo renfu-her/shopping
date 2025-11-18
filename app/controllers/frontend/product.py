@@ -35,7 +35,7 @@ def product_list():
     # Get categories for sidebar
     categories = Category.query.filter_by(is_active=True, parent_id=None).all()
     
-    return render_template('frontend/product/list.html', 
+    return render_template('product/list.html', 
                          products=products,
                          categories=categories,
                          category_id=category_id,
@@ -62,7 +62,7 @@ def product_detail(id, slug=None):
     # Get categories for sidebar
     categories = Category.query.filter_by(is_active=True, parent_id=None).all()
     
-    return render_template('frontend/product/detail.html',
+    return render_template('product/detail.html',
                          product=product,
                          related_products=related_products,
                          categories=categories)

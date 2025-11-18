@@ -14,7 +14,7 @@ def index():
     # Get categories for navigation
     categories = Category.query.filter_by(is_active=True, parent_id=None).all()
     
-    return render_template('frontend/home/index.html', 
+    return render_template('home/index.html', 
                          banners=banners, 
                          featured_products=featured_products,
                          categories=categories)

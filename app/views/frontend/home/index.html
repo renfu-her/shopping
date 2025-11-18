@@ -1,4 +1,4 @@
-{% extends "frontend/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Home - Shopwise{% endblock %}
 
@@ -27,8 +27,14 @@
             {% endfor %}
         </div>
         {% if banners|length > 1 %}
-        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev"><i class="ion-chevron-left"></i></a>
-        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next"><i class="ion-chevron-right"></i></a>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
         {% endif %}
     </div>
 </div>
@@ -46,31 +52,29 @@
         </div>
         <div class="row">
             {% for product in featured_products %}
-            <div class="col-lg-3 col-md-4 col-6">
-                <div class="product_wrap">
-                    <div class="product_img">
+            <div class="col-lg-3 col-md-4 col-6 mb-4">
+                <div class="product_wrap card h-100">
+                    <div class="product_img position-relative" style="overflow: hidden;">
                         <a href="{{ url_for('frontend.product_detail', id=product.id) }}">
-                            <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}">
+                            <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}" class="card-img-top" style="height: 250px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
                         </a>
-                        <div class="product_action_box">
-                            <ul class="list_none pr_action_btn">
-                                <li class="add-to-cart">
-                                    <form method="POST" action="{{ url_for('frontend.cart_add') }}" style="display: inline;">
-                                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn-link"><i class="icon-basket-loaded"></i> Add To Cart</button>
-                                    </form>
-                                </li>
-                            </ul>
+                        <div class="product_action_box position-absolute top-50 start-50 translate-middle" style="opacity: 0; transition: opacity 0.3s;">
+                            <form method="POST" action="{{ url_for('frontend.cart_add') }}">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-shopping-cart"></i> Add To Cart
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="product_info">
-                        <h6 class="product_title"><a href="{{ url_for('frontend.product_detail', id=product.id) }}">{{ product.name }}</a></h6>
+                    <div class="product_info card-body">
+                        <h6 class="product_title"><a href="{{ url_for('frontend.product_detail', id=product.id) }}" class="text-decoration-none">{{ product.name }}</a></h6>
                         <div class="product_price">
-                            <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                            <span class="price fw-bold">${{ "%.2f"|format(product.price) }}</span>
                         </div>
                         {% if not product.is_in_stock() %}
-                        <div class="text-danger">Out of Stock</div>
+                        <div class="text-danger small">Out of Stock</div>
                         {% endif %}
                     </div>
                 </div>

@@ -1,0 +1,81 @@
+/* Custom styles for Shopwise e-commerce platform */
+/* Add your custom CSS here */
+
+/* Product card hover effect */
+.product_wrap:hover .product_action_box {
+    opacity: 1 !important;
+}
+
+/* Banner carousel styles */
+.banner_section {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+}
+
+.carousel-item {
+    min-height: 400px;
+}
+
+.banner_content h2 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Section spacing */
+.section {
+    padding: 60px 0;
+}
+
+.small_pb {
+    padding-bottom: 30px;
+}
+
+.small_pt {
+    padding-top: 30px;
+}
+
+/* Product info styles */
+.product_info {
+    padding: 1rem;
+}
+
+.product_title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.product_title a:hover {
+    color: #007bff;
+}
+
+.price {
+    color: #007bff;
+    font-size: 1.25rem;
+}
+
+/* Heading styles */
+.heading_s1 h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+/* Button styles */
+.btn-fill-out {
+    background-color: transparent;
+    border: 2px solid #007bff;
+    color: #007bff;
+    padding: 10px 30px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.btn-fill-out:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+

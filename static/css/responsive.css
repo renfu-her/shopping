@@ -1,0 +1,30 @@
+/* Responsive styles for Shopwise e-commerce platform */
+/* Add your responsive CSS here */
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    .banner_content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .product_wrap {
+        margin-bottom: 1rem;
+    }
+    
+    .middle-header .nav_block {
+        flex-direction: column;
+    }
+    
+    .product_search_form {
+        width: 100%;
+        margin: 1rem 0;
+    }
+}
+
+/* Tablet devices */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .banner_content h2 {
+        font-size: 2rem;
+    }
+}
+

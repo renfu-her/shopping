@@ -21,5 +21,5 @@ def dashboard():
     # Recent orders
     recent_orders = Order.query.order_by(Order.created_at.desc()).limit(10).all()
     
-    return render_template('admin/dashboard.html', stats=stats, recent_orders=recent_orders)
+    return render_template('dashboard.html', stats=stats, recent_orders=recent_orders)
 

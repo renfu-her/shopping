@@ -1,22 +1,24 @@
-{% extends "admin/base.html" %}
+{% extends "base.html" %}
 
-{% block page_title %}User Management{% endblock %}
+{% block page_title %}使用者管理{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between mb-3">
-    <h2>Users</h2>
-    <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary">Add New User</a>
+    <h2><i class="fas fa-users"></i> 使用者列表</h2>
+    <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> 新增使用者
+    </a>
 </div>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Created</th>
-            <th>Actions</th>
+            <th>使用者名稱</th>
+            <th>電子郵件</th>
+            <th>角色</th>
+            <th>建立時間</th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
@@ -28,9 +30,13 @@
             <td><span class="badge bg-{{ 'danger' if user.role == 'admin' else 'secondary' }}">{{ user.role }}</span></td>
             <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
             <td>
-                <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                <form method="POST" action="{{ url_for('admin.delete_user', id=user.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure?');">
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-sm btn-warning">
+                    <i class="fas fa-edit"></i> 編輯
+                </a>
+                <form method="POST" action="{{ url_for('admin.delete_user', id=user.id) }}" style="display: inline;" onsubmit="return confirm('確定要刪除嗎？');">
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i> 刪除
+                    </button>
                 </form>
             </td>
         </tr>
@@ -43,7 +49,7 @@
 <nav>
     <ul class="pagination">
         {% if users.has_prev %}
-        <li class="page-item"><a class="page-link" href="?page={{ users.prev_num }}">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ users.prev_num }}">上一頁</a></li>
         {% endif %}
         {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
             {% if page_num %}
@@ -57,7 +63,7 @@
             {% endif %}
         {% endfor %}
         {% if users.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ users.next_num }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ users.next_num }}">下一頁</a></li>
         {% endif %}
     </ul>
 </nav>

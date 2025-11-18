@@ -10,7 +10,7 @@ from app.utils.helpers import save_uploaded_file, delete_file, slugify
 def categories():
     """Category management list"""
     categories = Category.query.filter_by(parent_id=None).all()
-    return render_template('admin/categories/list.html', categories=categories)
+    return render_template('categories/list.html', categories=categories)
 
 @admin_bp.route('/categories/create', methods=['GET', 'POST'])
 @login_required
@@ -47,7 +47,7 @@ def create_category():
     
     # Get all categories for parent selection
     all_categories = Category.query.all()
-    return render_template('admin/categories/form.html', category=None, all_categories=all_categories)
+    return render_template('categories/form.html', category=None, all_categories=all_categories)
 
 @admin_bp.route('/categories/<int:id>/edit', methods=['GET', 'POST'])
 @login_required

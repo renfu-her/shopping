@@ -15,5 +15,5 @@ def contact():
         flash('Thank you for your message! We will get back to you soon.', 'success')
         return redirect(url_for('frontend.contact'))
     
-    return render_template('frontend/contact/contact.html')
+    return render_template('contact/contact.html')
 

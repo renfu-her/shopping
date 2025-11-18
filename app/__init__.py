@@ -10,7 +10,12 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app(config_name='development'):
-    app = Flask(__name__)
+    # Get the root directory (parent of app directory)
+    import os
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    static_folder = os.path.join(root_dir, 'static')
+    
+    app = Flask(__name__, static_folder=static_folder)
     
     # Load configuration
     from app.config import Config
@@ -20,12 +25,12 @@ def create_app(config_name='development'):
     db.init_app(app)
     migrate.init_app(app, db)
     
-    # Register blueprints
-    from app.controllers.frontend import frontend_bp
+    # Register blueprints (admin first to ensure template priority)
     from app.controllers.admin import admin_bp
+    from app.controllers.frontend import frontend_bp
     
-    app.register_blueprint(frontend_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(frontend_bp)
     
     # Create upload directories
     upload_folder = app.config['UPLOAD_FOLDER']

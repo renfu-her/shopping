@@ -55,9 +55,10 @@ def create_app(config_name='development'):
         Serve uploaded files with automatic WebP fallback.
         If the requested file doesn't exist and it's an image file,
         try to serve the corresponding WebP version.
+        If still not found, return a placeholder SVG image instead of 404.
         """
         import os
-        from flask import abort
+        from flask import Response
         
         upload_folder = app.config['UPLOAD_FOLDER']
         file_path = os.path.join(upload_folder, filename)
@@ -67,7 +68,7 @@ def create_app(config_name='development'):
             return send_from_directory(upload_folder, filename)
         
         # If file doesn't exist and it's an image file, try WebP fallback
-        image_extensions = {'.png', '.jpg', '.jpeg', '.gif'}
+        image_extensions = {'.png', '.jpg', '.jpeg', '.gif', '.webp'}
         file_ext = os.path.splitext(filename)[1].lower()
         
         if file_ext in image_extensions:
@@ -80,8 +81,17 @@ def create_app(config_name='development'):
                 response = send_from_directory(upload_folder, webp_filename)
                 response.headers['Content-Type'] = 'image/webp'
                 return response
+            
+            # Image file not found - return placeholder SVG instead of 404
+            # This prevents browser from showing error page
+            placeholder_svg = '''<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+                <rect width="300" height="300" fill="#f0f0f0"/>
+                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#999" font-family="Arial" font-size="14">無圖片</text>
+            </svg>'''
+            return Response(placeholder_svg, mimetype='image/svg+xml')
         
-        # File not found
+        # Non-image file not found - return 404
+        from flask import abort
         abort(404)
     
     # SEO: robots.txt

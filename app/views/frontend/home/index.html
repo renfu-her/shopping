@@ -88,7 +88,7 @@
                 <div class="product_wrap card h-100">
                     <div class="product_img position-relative" style="overflow: hidden;">
                         <a href="{{ url_for('frontend.product_detail', id=product.id) }}">
-                            <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}" class="card-img-top" style="height: 250px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+                            <img src="/uploads/{{ product.main_image }}" alt="{{ product.name }}" class="card-img-top" style="height: 250px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
                         </a>
                         <div class="product_action_box position-absolute top-50 start-50 translate-middle" style="opacity: 0; transition: opacity 0.3s;">
                             <form method="POST" action="{{ url_for('frontend.cart_add') }}">
@@ -105,7 +105,7 @@
                         <div class="product_price">
                             <span class="price fw-bold">${{ "%.2f"|format(product.price) }}</span>
                         </div>
-                        {% if not product.is_in_stock() %}
+                        {% if not product.is_in_stock %}
                         <div class="text-danger small">Out of Stock</div>
                         {% endif %}
                     </div>

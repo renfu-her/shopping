@@ -71,12 +71,12 @@
                         <div class="product_wrap">
                             <div class="product_img">
                                 <a href="{{ url_for('frontend.product_detail', id=product.id) }}">
-                                    <img src="/uploads/{{ product.get_main_image() }}" alt="{{ product.name }}">
+                                    <img src="/uploads/{{ product.main_image }}" alt="{{ product.name }}">
                                 </a>
                                 <div class="product_action_box">
                                     <ul class="list_none pr_action_btn">
                                         <li class="add-to-cart">
-                                            {% if product.is_in_stock() %}
+                                            {% if product.is_in_stock %}
                                             <form method="POST" action="{{ url_for('frontend.cart_add') }}" style="display: inline;">
                                                 <input type="hidden" name="product_id" value="{{ product.id }}">
                                                 <input type="hidden" name="quantity" value="1">
@@ -92,7 +92,7 @@
                                 <div class="product_price">
                                     <span class="price">${{ "%.2f"|format(product.price) }}</span>
                                 </div>
-                                {% if not product.is_in_stock() %}
+                                {% if not product.is_in_stock %}
                                 <div class="text-danger">Out of Stock</div>
                                 {% endif %}
                             </div>

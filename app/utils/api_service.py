@@ -126,6 +126,7 @@ class APIService:
         
         products_data = []
         for product in pagination.items:
+            images = product.get_images()
             products_data.append({
                 'id': product.id,
                 'name': product.name,
@@ -135,8 +136,10 @@ class APIService:
                 'stock': product.stock,
                 'category_id': product.category_id,
                 'category_name': product.category.name if product.category else None,
-                'images': product.get_images(),
+                'images': images,
+                'main_image': images[0] if images else '/static/images/no-image.png',
                 'is_active': product.is_active,
+                'is_in_stock': product.is_in_stock(),
                 'created_at': product.created_at.isoformat()
             })
         
@@ -161,6 +164,7 @@ class APIService:
         if not product:
             return {'success': False, 'message': 'Product not found'}
         
+        images = product.get_images()
         product_data = {
             'id': product.id,
             'name': product.name,
@@ -170,8 +174,10 @@ class APIService:
             'stock': product.stock,
             'category_id': product.category_id,
             'category_name': product.category.name if product.category else None,
-            'images': product.get_images(),
+            'images': images,
+            'main_image': images[0] if images else '/static/images/no-image.png',
             'is_active': product.is_active,
+            'is_in_stock': product.is_in_stock(),
             'created_at': product.created_at.isoformat(),
             'updated_at': product.updated_at.isoformat()
         }
@@ -192,13 +198,16 @@ class APIService:
         
         products_data = []
         for product in products:
+            images = product.get_images()
             products_data.append({
                 'id': product.id,
                 'name': product.name,
                 'slug': product.slug,
                 'price': float(product.price),
-                'images': product.get_images(),
-                'is_active': product.is_active
+                'images': images,
+                'main_image': images[0] if images else '/static/images/no-image.png',
+                'is_active': product.is_active,
+                'is_in_stock': product.is_in_stock()
             })
         
         return {'success': True, 'data': products_data}
@@ -398,14 +407,33 @@ class APIService:
         items_data = []
         for item in cart_items:
             product = item.get('product')
-            items_data.append({
-                'product_id': product.id if product else None,
-                'product_name': product.name if product else 'N/A',
-                'product_image': product.get_main_image() if product else None,
-                'quantity': item.get('quantity', 0),
-                'price': float(product.price) if product else 0,
-                'subtotal': float(item.get('subtotal', 0))
-            })
+            if product:
+                images = product.get_images()
+                items_data.append({
+                    'product': {
+                        'id': product.id,
+                        'name': product.name,
+                        'price': float(product.price),
+                        'stock': product.stock,
+                        'main_image': images[0] if images else '/static/images/no-image.png',
+                        'is_in_stock': product.is_in_stock()
+                    },
+                    'quantity': item.get('quantity', 0),
+                    'subtotal': float(item.get('subtotal', 0))
+                })
+            else:
+                items_data.append({
+                    'product': {
+                        'id': None,
+                        'name': 'N/A',
+                        'price': 0,
+                        'stock': 0,
+                        'main_image': None,
+                        'is_in_stock': False
+                    },
+                    'quantity': item.get('quantity', 0),
+                    'subtotal': float(item.get('subtotal', 0))
+                })
         
         return {
             'success': True,

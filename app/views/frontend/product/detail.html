@@ -105,14 +105,14 @@
                     <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
                         <div class="product-image">
                             <div class="product_img_box">
-                                <img id="product_img" src="/uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}" alt="{{ product.name }}">
+                                <img id="product_img" src="/uploads/{{ product.images[0] if product.images else '' }}" alt="{{ product.name }}" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27%3E%3Crect width=%27300%27 height=%27300%27 fill=%27%23f0f0f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27 fill=%27%23999%27 font-family=%27Arial%27 font-size=%2714%27%3E無圖片%3C/text%3E%3C/svg%3E'">
                             </div>
                             {% if product.images|length > 1 %}
                             <div id="pr_item_gallery" class="product_gallery_item">
                                 {% for img in product.images %}
                                 <div class="item">
                                     <a href="#" class="product_gallery_item {% if loop.first %}active{% endif %}" data-image="/uploads/{{ img }}">
-                                        <img src="/uploads/{{ img }}" alt="product_small_img{{ loop.index }}">
+                                        <img src="/uploads/{{ img }}" alt="product_small_img{{ loop.index }}" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27100%27 height=%27100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f0f0f0%27/%3E%3C/svg%3E'">
                                     </a>
                                 </div>
                                 {% endfor %}

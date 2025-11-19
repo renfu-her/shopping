@@ -48,6 +48,48 @@ def product_list():
             self.has_next = page < pages
             self.prev_num = page - 1 if page > 1 else None
             self.next_num = page + 1 if page < pages else None
+        
+        def iter_pages(self, left_edge=2, right_edge=2, left_current=2, right_current=2):
+            """
+            Generate page numbers for pagination.
+            Similar to Flask-SQLAlchemy's pagination.iter_pages()
+            
+            Args:
+                left_edge: Number of pages on the left edge
+                right_edge: Number of pages on the right edge
+                left_current: Number of pages on the left of current page
+                right_current: Number of pages on the right of current page
+            
+            Yields:
+                Page numbers or None (for ellipsis)
+            """
+            last = self.pages
+            if last == 0:
+                return
+            
+            # Calculate the range of pages to show around current page
+            left_start = max(1, self.page - left_current)
+            right_end = min(last, self.page + right_current)
+            
+            # Yield left edge pages
+            for num in range(1, min(left_edge + 1, left_start)):
+                yield num
+            
+            # Add ellipsis if there's a gap between left edge and current range
+            if left_start > left_edge + 1:
+                yield None
+            
+            # Yield pages around current page
+            for num in range(left_start, right_end + 1):
+                yield num
+            
+            # Add ellipsis if there's a gap between current range and right edge
+            if right_end < last - right_edge:
+                yield None
+            
+            # Yield right edge pages
+            for num in range(max(right_end + 1, last - right_edge + 1), last + 1):
+                yield num
     
     products = Pagination(
         items=products_data,

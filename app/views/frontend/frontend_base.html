@@ -14,8 +14,8 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="{% block og_type %}website{% endblock %}">
 <meta property="og:url" content="{% block og_url %}{{ request.url }}{% endblock %}">
-<meta property="og:title" content="{% block og_title %}{% block title %}Shopwise - eCommerce Platform{% endblock %}{% endblock %}">
-<meta property="og:description" content="{% block og_description %}{% block meta_description %}Shopwise - Your trusted eCommerce platform for quality products at great prices.{% endblock %}{% endblock %}">
+<meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+<meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
 <meta property="og:image" content="{% block og_image %}{{ request.url_root }}static/images/logo.png{% endblock %}">
 <meta property="og:site_name" content="Shopwise">
 <meta property="og:locale" content="zh_TW">
@@ -23,8 +23,8 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="{% block twitter_url %}{{ request.url }}{% endblock %}">
-<meta name="twitter:title" content="{% block twitter_title %}{% block title %}Shopwise - eCommerce Platform{% endblock %}{% endblock %}">
-<meta name="twitter:description" content="{% block twitter_description %}{% block meta_description %}Shopwise - Your trusted eCommerce platform for quality products at great prices.{% endblock %}{% endblock %}">
+<meta name="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
+<meta name="twitter:description" content="{% block twitter_description %}{{ self.meta_description() }}{% endblock %}">
 <meta name="twitter:image" content="{% block twitter_image %}{{ request.url_root }}static/images/logo.png{% endblock %}">
 
 <!-- Structured Data (JSON-LD) -->

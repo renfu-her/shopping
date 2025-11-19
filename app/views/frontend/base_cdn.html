@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Shopwise - eCommerce Platform{% endblock %}</title>
+<title>{% block title %}購物去 - eCommerce Platform{% endblock %}</title>
 <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
 <!-- Bootstrap CSS from CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@ body { font-family: 'Roboto', sans-serif; }
         <div class="container">
             <div class="nav_block d-flex justify-content-between align-items-center">
                 <a class="navbar-brand" href="{{ url_for('frontend.index') }}">
-                    <span class="fs-3 fw-bold">Shopwise</span>
+                    <span class="fs-3 fw-bold">購物去</span>
                 </a>
                 <div class="product_search_form flex-grow-1 mx-4">
                     <form action="{{ url_for('frontend.product_list') }}" method="GET" class="d-flex">
@@ -150,7 +150,7 @@ body { font-family: 'Roboto', sans-serif; }
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="widget">
                         <div class="footer_logo">
-                            <a href="{{ url_for('frontend.index') }}" class="text-white text-decoration-none"><h4>Shopwise</h4></a>
+                            <a href="{{ url_for('frontend.index') }}" class="text-white text-decoration-none"><h4>購物去</h4></a>
                         </div>
                         <p>E-commerce shopping platform built with Flask</p>
                     </div>

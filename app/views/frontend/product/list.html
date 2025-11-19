@@ -1,13 +1,13 @@
 {% extends "frontend_base.html" %}
 
-{% block title %}Products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} - {{ cat.name }}{% endif %}{% endfor %}{% endif %} - Shopwise{% endblock %}
-{% block meta_description %}Browse our wide selection of quality products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} in {{ cat.name }}{% endif %}{% endfor %}{% endif %}. Find the best deals and latest trends at Shopwise.{% endblock %}
+{% block title %}Products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} - {{ cat.name }}{% endif %}{% endfor %}{% endif %} - 購物去{% endblock %}
+{% block meta_description %}Browse our wide selection of quality products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} in {{ cat.name }}{% endif %}{% endfor %}{% endif %}. Find the best deals and latest trends at 購物去.{% endblock %}
 {% block meta_keywords %}products, shop, online shopping{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %}, {{ cat.name }}{% endif %}{% endfor %}{% endif %}, shopwise{% endblock %}
 {% block canonical_url %}{{ url_for('frontend.product_list', category_id=category_id if category_id else None, _external=True) }}{% endblock %}
 {% block og_type %}website{% endblock %}
 {% block og_url %}{{ url_for('frontend.product_list', category_id=category_id if category_id else None, _external=True) }}{% endblock %}
-{% block og_title %}Products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} - {{ cat.name }}{% endif %}{% endfor %}{% endif %} - Shopwise{% endblock %}
-{% block og_description %}Browse our wide selection of quality products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} in {{ cat.name }}{% endif %}{% endfor %}{% endif %}. Find the best deals and latest trends at Shopwise.{% endblock %}
+{% block og_title %}Products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} - {{ cat.name }}{% endif %}{% endfor %}{% endif %} - 購物去{% endblock %}
+{% block og_description %}Browse our wide selection of quality products{% if category_id %}{% for cat in global_categories %}{% if cat.id == category_id %} in {{ cat.name }}{% endif %}{% endfor %}{% endif %}. Find the best deals and latest trends at 購物去.{% endblock %}
 
 {% block structured_data %}
 <script type="application/ld+json">

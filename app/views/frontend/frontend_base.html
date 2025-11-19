@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Shopwise - eCommerce Platform{% endblock %}</title>
-<meta name="description" content="{% block meta_description %}Shopwise - Your trusted eCommerce platform for quality products at great prices.{% endblock %}">
+<title>{% block title %}購物去 - eCommerce Platform{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}購物去 - Your trusted eCommerce platform for quality products at great prices.{% endblock %}">
 <meta name="keywords" content="{% block meta_keywords %}ecommerce, online shopping, products, shopwise{% endblock %}">
-<meta name="author" content="Shopwise">
+<meta name="author" content="購物去">
 <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
 <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
 
@@ -17,7 +17,7 @@
 <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
 <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
 <meta property="og:image" content="{% block og_image %}{{ request.url_root }}static/images/logo.png{% endblock %}">
-<meta property="og:site_name" content="Shopwise">
+<meta property="og:site_name" content="購物去">
 <meta property="og:locale" content="zh_TW">
 
 <!-- Twitter Card -->
@@ -78,7 +78,7 @@
         <div class="container">
             <div class="nav_block d-flex justify-content-between align-items-center">
                 <a class="navbar-brand" href="{{ url_for('frontend.index') }}">
-                    <span class="fs-3 fw-bold">Shopwise</span>
+                    <span class="fs-3 fw-bold">購物去</span>
                 </a>
                 <div class="product_search_form flex-grow-1 mx-4">
                     <form action="{{ url_for('frontend.product_list') }}" method="GET" class="d-flex">
@@ -173,9 +173,9 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="widget">
                         <div class="footer_logo">
-                            <a href="{{ url_for('frontend.index') }}" class="text-white text-decoration-none"><h5>Shopwise</h5></a>
+                            <a href="{{ url_for('frontend.index') }}" class="text-white text-decoration-none"><h5>購物去</h5></a>
                         </div>
-                        <p>Exclusive Shopwise eCommerce Bootstrap 5 Template</p>
+                        <p>Exclusive 購物去 eCommerce Bootstrap 5 Template</p>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">

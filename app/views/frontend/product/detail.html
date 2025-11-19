@@ -1,16 +1,16 @@
 {% extends "frontend_base.html" %}
 
-{% block title %}{{ product.name }} - Shopwise{% endblock %}
-{% block meta_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block title %}{{ product.name }} - 購物去{% endblock %}
+{% block meta_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at 購物去. Quality products at great prices.' }}{% endblock %}
 {% block meta_keywords %}{{ product.name }}, {{ product.category_name if product.get('category_name') else '' }}, shopwise, online shopping{% endblock %}
 {% block canonical_url %}{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}{% endblock %}
 {% block og_type %}product{% endblock %}
 {% block og_url %}{{ url_for('frontend.product_detail', id=product.id, slug=product.slug, _external=True) if product.slug else url_for('frontend.product_detail', id=product.id, _external=True) }}{% endblock %}
-{% block og_title %}{{ product.name }} - Shopwise{% endblock %}
-{% block og_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block og_title %}{{ product.name }} - 購物去{% endblock %}
+{% block og_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at 購物去. Quality products at great prices.' }}{% endblock %}
 {% block og_image %}{{ request.url_root }}uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}{% endblock %}
-{% block twitter_title %}{{ product.name }} - Shopwise{% endblock %}
-{% block twitter_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at Shopwise. Quality products at great prices.' }}{% endblock %}
+{% block twitter_title %}{{ product.name }} - 購物去{% endblock %}
+{% block twitter_description %}{{ product.description[:160] if product.description else 'Buy ' + product.name + ' at 購物去. Quality products at great prices.' }}{% endblock %}
 {% block twitter_image %}{{ request.url_root }}uploads/{{ product.images[0] if product.images else 'static/images/no-image.png' }}{% endblock %}
 
 {% block structured_data %}
@@ -27,7 +27,7 @@
   ],
   "brand": {
     "@type": "Brand",
-    "name": "Shopwise"
+    "name": "購物去"
   },
   "offers": {
     "@type": "Offer",

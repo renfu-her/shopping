@@ -1,4 +1,4 @@
-// Custom JavaScript for Shopwise e-commerce platform
+// Custom JavaScript for 購物去 e-commerce platform
 // Add your custom JavaScript here
 
 (function($) {
